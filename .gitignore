@@ -4,3 +4,8 @@ jspm_packages
 
 # Serverless directories
 .serverless
+*.pem
+
+# Env variables
+.env
+.env.*
