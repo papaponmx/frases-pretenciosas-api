@@ -5,7 +5,7 @@ const boom = require('boom');
 const Quote = require('../models/Quote');
 
 // Get all quotes
-exports.getQuotes = async (req, reply) => {
+exports.getQuotes = async () => {
   try {
     const quotes = await Quote.find();
     return quotes;
@@ -24,6 +24,25 @@ exports.getSingleQuote = async (req) => {
     throw boom.boomify(err);
   }
 };
+
+// Get random quote 
+exports.getRandomQuote = async () => {
+  try {
+
+    const quote = await Quote.count().exec((err, count) => {
+      const randomNumber = Math.floor(Math.random() * count);
+
+      Quote.findOne().skip(randomNumber).exec(
+        (err, quote) => {
+          return quote;
+        });
+    });
+    return quote;
+  } catch (err) {
+    throw boom.boomify(err);
+  }  
+};
+
 
 // Add a new Quote
 exports.addQuote = async (req) => {

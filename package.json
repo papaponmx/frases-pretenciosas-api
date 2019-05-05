@@ -1,5 +1,19 @@
 {
+  "name": "frasespretenciosas-api",
+  "version": "1.0.0",
+  "description": "API for frasespretenciosas.com",
+  "main": "server.js",
+  "repository": "https://github.com/papaponmx/frasesprentenciosas-api",
+  "author": "papaponmx <jaimemadrigalrios@gmail.com>",
+  "license": "MIT",
+  "private": false,
   "dependencies": {
-    "boom": "^7.3.0"
+    "boom": "^7.3.0",
+    "dotenv": "^7.0.0",
+    "mongoose": "^5.4.19"
+  },
+  "devDependencies": {
+    "serverless-offline": "^4.9.1"
   }
 }
+

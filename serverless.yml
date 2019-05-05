@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: frases-pretenciosas-api # NOTE: update this with your service name
+service: frases-pretenciosas-api
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -20,10 +20,12 @@ service: frases-pretenciosas-api # NOTE: update this with your service name
 provider:
   name: aws
   runtime: nodejs8.10
+  stage: dev
+  region: us-east-2
+  memorySize: 128
+  environment:
+    # MONGO_DB_URL: ${env:MONGO_DB_URL}
 
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -45,19 +47,28 @@ provider:
 #  environment:
 #    variable1: value1
 
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
+package:
+  exclude:
+    - ./**
+  include:
+    - node_modules/**
+    - src/**
+
+plugins:
+  - serverless-offline
 
 functions:
   hello:
-    handler: handler.hello
+    handler: handler.getRandomQuote
+  getRandomQuote:
 
+    handler: handlers/getRandomQuote.handler
+    timeout: 500
+    events:
+      - http:
+          path: api/quotes/random
+          method: get
+          cors: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
