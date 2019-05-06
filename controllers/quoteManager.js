@@ -1,84 +1,44 @@
-// External Dependancies
-const boom = require('boom');
 
-// Get Data Models
+const boom = require('boom');
+const mongoose = require('mongoose');
 const Quote = require('../models/Quote');
 
-// Get all quotes
-exports.getQuotes = async () => {
-  try {
-    const quotes = await Quote.find();
-    return quotes;
-  } catch (err) {
-    throw boom.boomify(err);
-  }
+require('dotenv').config();
+const { MONGO_DB_URL } =  process.env; // MongoDB Url
+
+/**
+* DB Commands
+*/
+
+mongoose.Promise = Promise;
+
+const dbExecute = (db, fn) => db.then(fn).finally(() => null);
+
+const dbConnectAndExecute = (MONGO_DB_URL, fn) => {
+  return dbExecute(mongoose.connect(MONGO_DB_URL, { useMongoClient: true }), fn);
 };
 
-// Get single Quote by ID
-exports.getSingleQuote = async (req) => {
-  try {
-    const id = req.params.id;
-    const quote = await Quote.findById(id);
-    return quote;
-  } catch (err) {
-    throw boom.boomify(err);
-  }
-};
 
 // Get random quote 
 exports.getRandomQuote = async () => {
   try {
-
-    const quote = await Quote.count().exec((err, count) => {
-      const randomNumber = Math.floor(Math.random() * count);
-
-      Quote.findOne().skip(randomNumber).exec(
-        (err, quote) => {
-          return quote;
-        });
-    });
+    const quote = await
+    dbConnectAndExecute(MONGO_DB_URL, () => (
+      Quote
+        .findOne({})
+    ));
     return quote;
   } catch (err) {
+      console.log('Shit nigga', err); // eslint-disable-line
     throw boom.boomify(err);
   }  
 };
-
-
+  
+// TODO: Add functions
 // Add a new Quote
-exports.addQuote = async (req) => {
-  try {
-    const quoteData = {
-      ...req.body,
-      dateCreated: new Date(),
-      likesCount: 0,
-    };
-    const quote = new Quote(quoteData);
-    return quote.save();
-  } catch (err) {
-    throw boom.boomify(err);
-  }
-};
-
-// Update an existing Quote
-exports.updateQuote = async (req) => {
-  try {
-    const id = req.params.id;
-    const quote = req.body;
-    const { ...updateData } = quote;
-    const update = await Quote.findByIdAndUpdate(id, updateData, { new: true });
-    return update;
-  } catch (err) {
-    throw boom.boomify(err);
-  }
-};
-
 // Delete a Quote
-exports.deleteQuote = async (req) => {
-  try {
-    const id = req.params.id;
-    const quote = await Quote.findByIdAndRemove(id);
-    return quote;
-  } catch (err) {
-    throw boom.boomify(err);
-  }
-};
+// Get all quotes
+// Get single Quote by ID
+// Like 
+// Update an existing Quote
+// Update likes to quote

@@ -12,7 +12,6 @@ const { getRandomQuote } = require('../controllers/quoteManager');
 
 module.exports.handler = async (event) => {
   const quote = await getRandomQuote(event);
-  console.log('DQTP', quote); // eslint-disable-line
   return {
     body: JSON.stringify({
       quote,
