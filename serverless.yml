@@ -25,8 +25,6 @@ provider:
   memorySize: 128
   environment:
     # MONGO_DB_URL: ${env:MONGO_DB_URL}
-
-
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
 #    - Effect: "Allow"
@@ -58,17 +56,15 @@ plugins:
   - serverless-offline
 
 functions:
-  hello:
-    handler: handler.getRandomQuote
   getRandomQuote:
 
     handler: handlers/getRandomQuote.handler
-    timeout: 500
+    # timeout: 500
     events:
       - http:
           path: api/quotes/random
           method: get
-          cors: true
+        #  cors: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -103,9 +99,27 @@ functions:
 #    environment:
 #      variable2: value2
 
-# you can add CloudFormation resource templates here
-#resources:
 #  Resources:
+resources:
+  Resources:
+  FrasesDynamoDbTAble:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: Retain
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"   
+      KeySchema:
+        -
+          AttributeName: "id"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      StreamSpecification:
+        StreamViewType: "NEW_AND_OLD_IMAGES"
+      TableName: ${self:provider.environment.FRASES_TABLE}
 #    NewResource:
 #      Type: AWS::S3::Bucket
 #      Properties:
