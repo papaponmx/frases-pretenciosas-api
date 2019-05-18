@@ -8,12 +8,13 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "bluebird": "^3.5.4",
     "boom": "^7.3.0",
     "dotenv": "^7.0.0",
-    "mongoose": "^5.4.19"
+    "mongoose": "^5.4.19",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "serverless-offline": "^4.9.1"
   }
 }
-
